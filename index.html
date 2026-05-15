@@ -1,0 +1,2270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grief to Glow Prompt Generator</title>
+
+  <style>
+    :root {
+      --navy: #071a3d;
+      --dark: #090b12;
+      --panel: rgba(0, 0, 0, 0.78);
+      --panel-soft: rgba(255, 255, 255, 0.07);
+      --card: rgba(16, 22, 36, 0.92);
+      --card-2: rgba(255, 255, 255, 0.055);
+      --gold: #ffd700;
+      --gold-deep: #d4af37;
+      --white: #ffffff;
+      --soft-blue: #dbe7ff;
+      --muted: #aab7d4;
+      --input: #101624;
+      --border: rgba(212, 175, 55, 0.72);
+      --border-soft: rgba(212, 175, 55, 0.32);
+      --shadow: rgba(212, 175, 55, 0.32);
+      --locked: #ffef9a;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(255, 215, 0, 0.20), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(7, 26, 61, 0.9), transparent 35%),
+        linear-gradient(135deg, var(--navy), var(--dark), #5e4a0d);
+      color: var(--white);
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: auto;
+      background: var(--panel);
+      border: 2px solid var(--gold-deep);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 0 28px var(--shadow);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 16px;
+      border: 1px solid var(--border-soft);
+      background: rgba(255,255,255,0.045);
+      border-radius: 20px;
+    }
+
+    h1 {
+      color: var(--gold);
+      margin: 0 0 6px;
+      font-size: clamp(26px, 4vw, 40px);
+      letter-spacing: 0.4px;
+      line-height: 1.05;
+    }
+
+    h2 {
+      color: var(--gold);
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .tagline {
+      color: var(--soft-blue);
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.35;
+    }
+
+    .badge {
+      justify-self: end;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #061225;
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 0 18px rgba(255, 215, 0, 0.35);
+    }
+
+    .comfort-box {
+      margin: 0 0 16px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: var(--panel-soft);
+      border-left: 5px solid var(--gold);
+      color: #f4f4f4;
+      line-height: 1.45;
+      font-size: 15px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-soft);
+    }
+
+    .tab-btn,
+    button {
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s ease;
+      border: none;
+    }
+
+    .tab-btn {
+      flex: 1 1 160px;
+      background: var(--input);
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #061225;
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.45);
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeIn 0.25s ease;
+      padding: 14px;
+      border: 1px solid rgba(212, 175, 55, 0.42);
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .tab-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .mini-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .category-card {
+      background: linear-gradient(180deg, var(--card), rgba(8, 12, 22, 0.92));
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 12px;
+      min-height: 152px;
+      display: grid;
+      grid-template-rows: auto auto auto;
+      gap: 9px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.20);
+    }
+
+    .category-card.locked {
+      border-color: var(--locked);
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.28);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .category-title {
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 14px;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .lock-btn {
+      width: 38px;
+      height: 34px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--gold);
+      border: 1px solid var(--border-soft);
+      border-radius: 11px;
+      font-size: 16px;
+      flex: 0 0 auto;
+    }
+
+    .lock-btn.locked {
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #061225;
+      border-color: var(--gold);
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      background: var(--input);
+      color: var(--white);
+      font-size: 14px;
+      outline: none;
+    }
+
+    select:focus,
+    input:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.14);
+    }
+
+    .custom-field {
+      font-size: 13px;
+    }
+
+    textarea {
+      min-height: 260px;
+      resize: vertical;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      align-items: center;
+    }
+
+    button:not(.tab-btn):not(.lock-btn) {
+      color: #061225;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      padding: 12px 16px;
+      min-width: 122px;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.45);
+    }
+
+    .clear-btn {
+      background: linear-gradient(135deg, #ffffff, #cfd8ff) !important;
+    }
+
+    .save-btn {
+      background: linear-gradient(135deg, #8ec5ff, #ffffff) !important;
+    }
+
+    .output-section,
+    .saved-section {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.055);
+      border: 1px solid var(--border-soft);
+    }
+
+    .output-header,
+    .saved-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 14px;
+    }
+
+    .saved-item {
+      background: var(--input);
+      border: 1px solid #30456f;
+      padding: 13px;
+      border-radius: 14px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+      color: #eaf1ff;
+      line-height: 1.45;
+      font-size: 14px;
+    }
+
+
+    .preset-card {
+      border-color: rgba(255, 215, 0, 0.60);
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.12), rgba(16, 22, 36, 0.92));
+    }
+
+    .preset-apply-btn {
+      width: 100%;
+      min-width: 0 !important;
+      padding: 10px 12px !important;
+      border-radius: 12px !important;
+      font-size: 13px !important;
+    }
+
+    @media (max-width: 800px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .badge {
+        justify-self: start;
+      }
+
+      .container {
+        padding: 14px;
+      }
+
+      .category-grid {
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      }
+
+      .button-row button {
+        flex: 1 1 130px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .category-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .tab-btn {
+        flex-basis: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <header class="hero">
+      <div>
+        <h1>Grief to Glow Prompt Generator</h1>
+        <p class="tagline">Turning pain into peace one prompt at a time.</p>
+      </div>
+      <div class="badge">Premium Healing Dashboard</div>
+    </header>
+
+    <section class="comfort-box">
+      Create grief-healing prompts that feel comforting, uplifting, peaceful, and full of love. No scary, dark, haunted, or hopeless energy. Just soft strength, remembrance, and light.
+    </section>
+
+    <nav class="tabs" aria-label="Generator Tabs">
+      <button type="button" class="tab-btn active" data-tab="healingTab">Healing Image</button>
+      <button type="button" class="tab-btn" data-tab="affirmationTab">Affirmation Poster</button>
+      <button type="button" class="tab-btn" data-tab="memoryTab">Memory Scene</button>
+      <button type="button" class="tab-btn" data-tab="captionTab">Caption + Message</button>
+      <button type="button" class="tab-btn" data-tab="letterTab">Letter To My Loved One</button>
+    </nav>
+
+    <section id="healingTab" class="tab-content active">
+      <div class="tab-title-row">
+        <div>
+          <h2>Healing Image Prompt</h2>
+          <p class="mini-note">Compact category cards. Use custom text to override dropdowns. Lock cards before randomizing.</p>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card preset-card" data-card="healingPreset">
+          <div class="card-top"><p class="category-title">Healing Image Preset</p><button type="button" class="lock-btn" data-lock="healingPreset">🔓</button></div>
+          <select id="healingPreset"></select>
+          <button type="button" class="preset-apply-btn" data-action="preset" data-generator="healing">Apply Preset</button>
+        </article>
+
+                <article class="category-card" data-card="healingEmotion">
+          <div class="card-top"><p class="category-title">Emotion / Grief Moment</p><button type="button" class="lock-btn" data-lock="healingEmotion">🔓</button></div>
+          <select id="healingEmotion">
+            <option>Missing Them Today</option><option>Anniversary Grief</option><option>Quiet Tears</option><option>Feeling Numb</option><option>Trying To Keep Going</option><option>Remembering Their Smile</option><option>Needing Comfort</option><option>Hope After Loss</option><option>Love That Still Remains</option><option>Peace In The Pain</option>
+          </select>
+          <input class="custom-field" id="healingEmotionCustom" placeholder="Custom emotion..." />
+        </article>
+
+        <article class="category-card" data-card="healingMood">
+          <div class="card-top"><p class="category-title">Healing Mood</p><button type="button" class="lock-btn" data-lock="healingMood">🔓</button></div>
+          <select id="healingMood">
+            <option>Soft and Comforting</option><option>Peaceful and Warm</option><option>Emotional but Hopeful</option><option>Spiritually Uplifting</option><option>Gentle and Reflective</option><option>Motivational Strength</option><option>Calm After The Storm</option><option>Light Breaking Through</option>
+          </select>
+          <input class="custom-field" id="healingMoodCustom" placeholder="Custom mood..." />
+        </article>
+
+        <article class="category-card" data-card="healingScene">
+          <div class="card-top"><p class="category-title">Scene Style</p><button type="button" class="lock-btn" data-lock="healingScene">🔓</button></div>
+          <select id="healingScene">
+            <option>Candlelit Bedroom</option><option>Memorial Garden</option><option>Sunrise Window</option><option>Rainy Healing Walk</option><option>Peaceful Lakeside</option><option>Cozy Prayer Corner</option><option>Starry Night Reflection</option><option>Empty Chair With Light</option><option>Dreamy Cloud Glow</option><option>Flower Field of Memories</option>
+          </select>
+          <input class="custom-field" id="healingSceneCustom" placeholder="Custom scene..." />
+        </article>
+
+        <article class="category-card" data-card="healingSymbol">
+          <div class="card-top"><p class="category-title">Symbolic Details</p><button type="button" class="lock-btn" data-lock="healingSymbol">🔓</button></div>
+          <select id="healingSymbol">
+            <option>glowing candles</option><option>soft butterflies</option><option>warm golden light</option><option>memory photo frame</option><option>open journal</option><option>white flowers</option><option>doves</option><option>soft rain</option><option>sunrise rays</option><option>floating sparkles</option><option>heart-shaped light</option><option>gentle wind</option>
+          </select>
+          <input class="custom-field" id="healingSymbolCustom" placeholder="Custom symbol..." />
+        </article>
+
+        <article class="category-card" data-card="healingArtStyle">
+          <div class="card-top"><p class="category-title">Art Style</p><button type="button" class="lock-btn" data-lock="healingArtStyle">🔓</button></div>
+          <select id="healingArtStyle">
+            <option>Soft Cinematic Realism</option><option>Luxury Digital Illustration</option><option>Emotional Editorial Poster</option><option>Dreamy Watercolor Glow</option><option>Warm Storybook Realism</option><option>Peaceful Spiritual Art</option>
+          </select>
+          <input class="custom-field" id="healingArtStyleCustom" placeholder="Custom art style..." />
+        </article>
+
+        <article class="category-card" data-card="healingColorPalette">
+          <div class="card-top"><p class="category-title">Color Palette</p><button type="button" class="lock-btn" data-lock="healingColorPalette">🔓</button></div>
+          <select id="healingColorPalette">
+            <option>Royal Blue, Gold, Black, and Soft White</option><option>Warm Gold and Cream</option><option>Soft Lavender and Silver</option><option>Blush Pink and Champagne</option><option>Sky Blue and White</option><option>Sunset Orange and Gold</option>
+          </select>
+          <input class="custom-field" id="healingColorPaletteCustom" placeholder="Custom colors..." />
+        </article>
+
+        <article class="category-card" data-card="healingLighting">
+          <div class="card-top"><p class="category-title">Lighting Style</p><button type="button" class="lock-btn" data-lock="healingLighting">🔓</button></div>
+          <select id="healingLighting">
+            <option>soft golden glow</option><option>sunrise light breaking through</option><option>candlelit warmth</option><option>gentle heavenly light</option><option>rainy window glow</option><option>moonlight with soft highlights</option>
+          </select>
+          <input class="custom-field" id="healingLightingCustom" placeholder="Custom lighting..." />
+        </article>
+
+        <article class="category-card" data-card="healingSubject">
+          <div class="card-top"><p class="category-title">Main Subject</p><button type="button" class="lock-btn" data-lock="healingSubject">🔓</button></div>
+          <select id="healingSubject">
+            <option>a grieving woman finding peace</option><option>a person sitting quietly with memories</option><option>a woman holding a journal near soft light</option><option>a peaceful silhouette near a window</option><option>hands holding a glowing memory photo</option><option>an empty chair surrounded by warm light</option>
+          </select>
+          <input class="custom-field" id="healingSubjectCustom" placeholder="Custom subject..." />
+        </article>
+
+        <article class="category-card" data-card="healingTextPlacement">
+          <div class="card-top"><p class="category-title">Typography Placement</p><button type="button" class="lock-btn" data-lock="healingTextPlacement">🔓</button></div>
+          <select id="healingTextPlacement">
+            <option>bottom center with elegant readable lettering</option><option>top center with soft glowing text</option><option>right side with clean vertical quote styling</option><option>left side with warm handwritten-style typography</option><option>center overlay with gentle transparent glow</option><option>no typography, image only</option>
+          </select>
+          <input class="custom-field" id="healingTextPlacementCustom" placeholder="Custom placement..." />
+        </article>
+
+        <article class="category-card" data-card="healingTextOption">
+          <div class="card-top"><p class="category-title">Text Option</p><button type="button" class="lock-btn" data-lock="healingTextOption">🔓</button></div>
+          <select id="healingTextOption">
+            <option>Include meaningful typography</option><option>No text on image</option>
+          </select>
+          <input class="custom-field" id="healingTextOptionCustom" placeholder="Custom text rule..." />
+        </article>
+
+        <article class="category-card" data-card="healingMessage">
+          <div class="card-top"><p class="category-title">Message / Typography</p><button type="button" class="lock-btn" data-lock="healingMessage">🔓</button></div>
+          <select id="healingMessage">
+            <option>I still carry your love.</option><option>Grief is love with nowhere to go.</option><option>I’m learning to live with the missing.</option><option>You are gone, but never forgotten.</option><option>Some days surviving is enough.</option><option>Love never leaves.</option><option>I can miss you and still keep going.</option><option>Your memory still lights my way.</option>
+          </select>
+          <input class="custom-field" id="healingMessageCustom" placeholder="Custom quote..." />
+        </article>
+
+        <article class="category-card" data-card="healingDetail">
+          <div class="card-top"><p class="category-title">Loved One Detail</p><button type="button" class="lock-btn" data-lock="healingDetail">🔓</button></div>
+          <select id="healingDetail">
+            <option>None</option><option>favorite color</option><option>favorite flower</option><option>their laugh</option><option>their smile</option><option>a shared memory</option><option>a special nickname</option>
+          </select>
+          <input class="custom-field" id="healingDetailCustom" placeholder="Custom detail..." />
+        </article>
+      </div>
+
+      <div class="button-row">
+        <button type="button" data-action="generate" data-generator="healing">Generate</button>
+        <button type="button" data-action="copy">Copy</button>
+        <button type="button" class="clear-btn" data-action="clear">Clear</button>
+        <button type="button" data-action="random" data-generator="healing">Random</button>
+        <button type="button" class="save-btn" data-action="save">Save</button>
+      </div>
+    </section>
+
+    <section id="affirmationTab" class="tab-content">
+      <div class="tab-title-row">
+        <div>
+          <h2>Affirmation Poster Prompt</h2>
+          <p class="mini-note">Create healing wall-art style quote prompts.</p>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card preset-card" data-card="affirmationPreset">
+          <div class="card-top"><p class="category-title">Affirmation Poster Preset</p><button type="button" class="lock-btn" data-lock="affirmationPreset">🔓</button></div>
+          <select id="affirmationPreset"></select>
+          <button type="button" class="preset-apply-btn" data-action="preset" data-generator="affirmation">Apply Preset</button>
+        </article>
+
+                <article class="category-card" data-card="affirmTheme">
+          <div class="card-top"><p class="category-title">Affirmation Theme</p><button type="button" class="lock-btn" data-lock="affirmTheme">🔓</button></div>
+          <select id="affirmTheme">
+            <option>Learning To Breathe Again</option><option>Still Loved</option><option>Soft Strength</option><option>Healing Day By Day</option><option>Peace After Pain</option>
+          </select>
+          <input class="custom-field" id="affirmThemeCustom" placeholder="Custom theme..." />
+        </article>
+
+        <article class="category-card" data-card="affirmPosterStyle">
+          <div class="card-top"><p class="category-title">Poster Style</p><button type="button" class="lock-btn" data-lock="affirmPosterStyle">🔓</button></div>
+          <select id="affirmPosterStyle">
+            <option>Soft Luxury Poster</option><option>Minimal Emotional Quote Art</option><option>Golden Light Typography Poster</option><option>Peaceful Wall Art Style</option><option>Journal Page Inspired Poster</option>
+          </select>
+          <input class="custom-field" id="affirmPosterStyleCustom" placeholder="Custom poster style..." />
+        </article>
+
+        <article class="category-card" data-card="affirmText">
+          <div class="card-top"><p class="category-title">Affirmation Text</p><button type="button" class="lock-btn" data-lock="affirmText">🔓</button></div>
+          <select id="affirmText">
+            <option>I am allowed to grieve and still grow.</option><option>My love for them still lives in me.</option><option>I can carry grief with grace today.</option><option>I am healing at my own pace.</option><option>My heart is learning how to breathe again.</option>
+          </select>
+          <input class="custom-field" id="affirmTextCustom" placeholder="Custom affirmation..." />
+        </article>
+      </div>
+
+      <div class="button-row">
+        <button type="button" data-action="generate" data-generator="affirmation">Generate</button>
+        <button type="button" data-action="copy">Copy</button>
+        <button type="button" class="clear-btn" data-action="clear">Clear</button>
+        <button type="button" data-action="random" data-generator="affirmation">Random</button>
+        <button type="button" class="save-btn" data-action="save">Save</button>
+      </div>
+    </section>
+
+    <section id="memoryTab" class="tab-content">
+      <div class="tab-title-row">
+        <div>
+          <h2>Memory Scene Prompt</h2>
+          <p class="mini-note">Build symbolic remembrance scenes that feel warm and safe.</p>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card preset-card" data-card="memoryPreset">
+          <div class="card-top"><p class="category-title">Memory Scene Preset</p><button type="button" class="lock-btn" data-lock="memoryPreset">🔓</button></div>
+          <select id="memoryPreset"></select>
+          <button type="button" class="preset-apply-btn" data-action="preset" data-generator="memory">Apply Preset</button>
+        </article>
+
+                <article class="category-card" data-card="memoryType">
+          <div class="card-top"><p class="category-title">Memory Type</p><button type="button" class="lock-btn" data-lock="memoryType">🔓</button></div>
+          <select id="memoryType">
+            <option>A peaceful reminder of their love</option><option>A beautiful memory returning softly</option><option>A quiet sign that they are still near in spirit</option><option>A healing moment of remembrance</option><option>A symbolic tribute to their life</option>
+          </select>
+          <input class="custom-field" id="memoryTypeCustom" placeholder="Custom memory type..." />
+        </article>
+
+        <article class="category-card" data-card="memorySetting">
+          <div class="card-top"><p class="category-title">Memory Setting</p><button type="button" class="lock-btn" data-lock="memorySetting">🔓</button></div>
+          <select id="memorySetting">
+            <option>Golden sunset garden</option><option>Soft glowing kitchen table</option><option>Peaceful bedroom with old photographs</option><option>Dreamlike field of flowers</option><option>Quiet porch with warm evening light</option>
+          </select>
+          <input class="custom-field" id="memorySettingCustom" placeholder="Custom setting..." />
+        </article>
+
+        <article class="category-card" data-card="memorySymbol">
+          <div class="card-top"><p class="category-title">Memory Symbol</p><button type="button" class="lock-btn" data-lock="memorySymbol">🔓</button></div>
+          <select id="memorySymbol">
+            <option>a glowing heart of light</option><option>a framed photo glowing softly</option><option>a single candle beside flowers</option><option>a gentle butterfly near the window</option><option>a handwritten letter filled with love</option>
+          </select>
+          <input class="custom-field" id="memorySymbolCustom" placeholder="Custom symbol..." />
+        </article>
+
+        <article class="category-card" data-card="memoryFocalPoint">
+          <div class="card-top"><p class="category-title">Emotional Focal Point</p><button type="button" class="lock-btn" data-lock="memoryFocalPoint">🔓</button></div>
+          <select id="memoryFocalPoint">
+            <option>remembrance wrapped in love</option><option>quiet strength after loss</option><option>a soft sign of continuing love</option><option>peaceful connection through memory</option><option>hope rising through grief</option>
+          </select>
+          <input class="custom-field" id="memoryFocalPointCustom" placeholder="Custom focus..." />
+        </article>
+      </div>
+
+      <div class="button-row">
+        <button type="button" data-action="generate" data-generator="memory">Generate</button>
+        <button type="button" data-action="copy">Copy</button>
+        <button type="button" class="clear-btn" data-action="clear">Clear</button>
+        <button type="button" data-action="random" data-generator="memory">Random</button>
+        <button type="button" class="save-btn" data-action="save">Save</button>
+      </div>
+    </section>
+
+    <section id="captionTab" class="tab-content">
+      <div class="tab-title-row">
+        <div>
+          <h2>Caption + Message Generator</h2>
+          <p class="mini-note">Create soft social captions for grief support posts.</p>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card preset-card" data-card="captionPreset">
+          <div class="card-top"><p class="category-title">Caption Preset</p><button type="button" class="lock-btn" data-lock="captionPreset">🔓</button></div>
+          <select id="captionPreset"></select>
+          <button type="button" class="preset-apply-btn" data-action="preset" data-generator="caption">Apply Preset</button>
+        </article>
+
+                <article class="category-card" data-card="captionMood">
+          <div class="card-top"><p class="category-title">Caption Mood</p><button type="button" class="lock-btn" data-lock="captionMood">🔓</button></div>
+          <select id="captionMood">
+            <option>Comforting</option><option>Motivational</option><option>Faith-filled</option><option>Soft and emotional</option><option>Hopeful but honest</option>
+          </select>
+          <input class="custom-field" id="captionMoodCustom" placeholder="Custom mood..." />
+        </article>
+
+        <article class="category-card" data-card="captionAudience">
+          <div class="card-top"><p class="category-title">Audience</p><button type="button" class="lock-btn" data-lock="captionAudience">🔓</button></div>
+          <select id="captionAudience">
+            <option>Someone missing a loved one</option><option>Someone facing an anniversary date</option><option>Someone grieving silently</option><option>Someone trying to keep going</option><option>Someone needing comfort today</option>
+          </select>
+          <input class="custom-field" id="captionAudienceCustom" placeholder="Custom audience..." />
+        </article>
+
+        <article class="category-card" data-card="captionCTA">
+          <div class="card-top"><p class="category-title">Call To Action</p><button type="button" class="lock-btn" data-lock="captionCTA">🔓</button></div>
+          <select id="captionCTA">
+            <option>Comment “I remember” if this touched your heart.</option><option>Save this for the day grief feels heavy.</option><option>Share this with someone who needs comfort.</option><option>Comment a heart for someone you miss.</option><option>Follow for more healing reminders.</option>
+          </select>
+          <input class="custom-field" id="captionCTACustom" placeholder="Custom CTA..." />
+        </article>
+      </div>
+
+      <div class="button-row">
+        <button type="button" data-action="generate" data-generator="caption">Generate</button>
+        <button type="button" data-action="copy">Copy</button>
+        <button type="button" class="clear-btn" data-action="clear">Clear</button>
+        <button type="button" data-action="random" data-generator="caption">Random</button>
+        <button type="button" class="save-btn" data-action="save">Save</button>
+      </div>
+    </section>
+
+    <section id="letterTab" class="tab-content">
+      <div class="tab-title-row">
+        <div>
+          <h2>Letter To My Loved One</h2>
+          <p class="mini-note">Create personal-style letters for journaling, captions, videos, memorial posts, or healing content.</p>
+        </div>
+      </div>
+
+      <div class="category-grid">
+        <article class="category-card preset-card" data-card="letterPreset">
+          <div class="card-top"><p class="category-title">Letter Preset</p><button type="button" class="lock-btn" data-lock="letterPreset">🔓</button></div>
+          <select id="letterPreset"></select>
+          <button type="button" class="preset-apply-btn" data-action="preset" data-generator="letter">Apply Preset</button>
+        </article>
+
+                <article class="category-card" data-card="letterEmotion">
+          <div class="card-top"><p class="category-title">Letter Emotion</p><button type="button" class="lock-btn" data-lock="letterEmotion">🔓</button></div>
+          <select id="letterEmotion">
+            <option>I miss you deeply today</option><option>I wish I could talk to you again</option><option>I’m trying to stay strong</option><option>I still think about you every day</option><option>I’m healing slowly</option><option>I wish you could see me now</option><option>I still feel your love around me</option><option>I’m learning to live with the missing</option>
+          </select>
+          <input class="custom-field" id="letterEmotionCustom" placeholder="Custom emotion..." />
+        </article>
+
+        <article class="category-card" data-card="letterRelationship">
+          <div class="card-top"><p class="category-title">Relationship</p><button type="button" class="lock-btn" data-lock="letterRelationship">🔓</button></div>
+          <select id="letterRelationship">
+            <option>My Sister</option><option>My Brother</option><option>My Mother</option><option>My Father</option><option>My Grandmother</option><option>My Grandfather</option><option>My Best Friend</option><option>Someone I Loved Deeply</option>
+          </select>
+          <input class="custom-field" id="letterRelationshipCustom" placeholder="Custom relationship/name..." />
+        </article>
+
+        <article class="category-card" data-card="letterTone">
+          <div class="card-top"><p class="category-title">Letter Tone</p><button type="button" class="lock-btn" data-lock="letterTone">🔓</button></div>
+          <select id="letterTone">
+            <option>soft and emotional</option><option>comforting and healing</option><option>deeply personal</option><option>hopeful but tearful</option><option>warm and grateful</option><option>honest and vulnerable</option>
+          </select>
+          <input class="custom-field" id="letterToneCustom" placeholder="Custom tone..." />
+        </article>
+
+        <article class="category-card" data-card="letterMemoryFocus">
+          <div class="card-top"><p class="category-title">Main Memory</p><button type="button" class="lock-btn" data-lock="letterMemoryFocus">🔓</button></div>
+          <select id="letterMemoryFocus">
+            <option>their smile</option><option>their laugh</option><option>the way they comforted me</option><option>our favorite conversations</option><option>the memories we shared together</option><option>their kindness</option><option>their strength</option><option>their presence in my life</option>
+          </select>
+          <input class="custom-field" id="letterMemoryFocusCustom" placeholder="Custom memory..." />
+        </article>
+
+        <article class="category-card" data-card="letterHealingEnding">
+          <div class="card-top"><p class="category-title">Healing Ending</p><button type="button" class="lock-btn" data-lock="letterHealingEnding">🔓</button></div>
+          <select id="letterHealingEnding">
+            <option>I will carry your love with me forever.</option><option>I hope you know how much I still love you.</option><option>Your memory still gives me strength.</option><option>I am learning to keep going with your love in my heart.</option><option>Until we meet again, I will keep honoring you with love.</option>
+          </select>
+          <input class="custom-field" id="letterHealingEndingCustom" placeholder="Custom ending..." />
+        </article>
+
+        <article class="category-card" data-card="letterPersonalDetail">
+          <div class="card-top"><p class="category-title">Personal Detail</p><button type="button" class="lock-btn" data-lock="letterPersonalDetail">🔓</button></div>
+          <select id="letterPersonalDetail">
+            <option>None</option><option>her laugh</option><option>our phone calls</option><option>their favorite song</option><option>sunflowers</option><option>family memories</option><option>inside jokes</option>
+          </select>
+          <input class="custom-field" id="letterPersonalDetailCustom" placeholder="Custom personal detail..." />
+        </article>
+      </div>
+
+      <div class="button-row">
+        <button type="button" data-action="generate" data-generator="letter">Generate</button>
+        <button type="button" data-action="copy">Copy</button>
+        <button type="button" class="clear-btn" data-action="clear">Clear</button>
+        <button type="button" data-action="random" data-generator="letter">Random</button>
+        <button type="button" class="save-btn" data-action="save">Save</button>
+      </div>
+    </section>
+
+    <section class="output-section">
+      <div class="output-header">
+        <h2>Generated Output</h2>
+        <div class="status" id="statusMessage" aria-live="polite"></div>
+      </div>
+      <textarea id="mainOutput" placeholder="Your healing prompt, caption, or letter will appear here..."></textarea>
+    </section>
+
+    <section class="saved-section">
+      <div class="saved-header">
+        <h2>Saved Prompts</h2>
+        <button type="button" class="clear-btn" data-action="clearSaved">Clear Saved</button>
+      </div>
+      <div id="savedPrompts"></div>
+    </section>
+  </main>
+
+  <script>
+    const emotionalSafetyRule = `EMOTIONAL SAFETY RULE:
+Keep this image comforting, uplifting, peaceful, and healing. Avoid horror, haunted visuals, scary ghost effects, coffin closeups, funeral scenes, excessive darkness, disturbing sadness, gore, trauma-based imagery, or hopeless emotional tones. The final image should feel like grief being held with love, light, peace, remembrance, and quiet strength.`;
+
+    const lockedCards = new Set();
+
+
+    const presetData = {
+      "healing": [
+            {
+                  "name": "Sunrise Strength",
+                  "healingEmotion": "Trying To Keep Going",
+                  "healingMood": "Light Breaking Through",
+                  "healingScene": "Sunrise Window",
+                  "healingSymbol": "sunrise rays",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "sunrise light breaking through",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I can miss you and still keep going.",
+                  "healingDetail": "a shared memory"
+            },
+            {
+                  "name": "Sister Love Still Glows",
+                  "healingEmotion": "Love That Still Remains",
+                  "healingMood": "Soft and Comforting",
+                  "healingScene": "Memorial Garden",
+                  "healingSymbol": "soft butterflies",
+                  "healingArtStyle": "Luxury Digital Illustration",
+                  "healingColorPalette": "Royal Blue, Gold, Black, and Soft White",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I still carry your love.",
+                  "healingDetail": "their smile"
+            },
+            {
+                  "name": "Quiet Anniversary Grace",
+                  "healingEmotion": "Anniversary Grief",
+                  "healingMood": "Gentle and Reflective",
+                  "healingScene": "Candlelit Bedroom",
+                  "healingSymbol": "glowing candles",
+                  "healingArtStyle": "Emotional Editorial Poster",
+                  "healingColorPalette": "Blush Pink and Champagne",
+                  "healingLighting": "candlelit warmth",
+                  "healingSubject": "a woman holding a journal near soft light",
+                  "healingTextPlacement": "left side with warm handwritten-style typography",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Some days surviving is enough.",
+                  "healingDetail": "a special nickname"
+            },
+            {
+                  "name": "Rain Walk Release",
+                  "healingEmotion": "Quiet Tears",
+                  "healingMood": "Emotional but Hopeful",
+                  "healingScene": "Rainy Healing Walk",
+                  "healingSymbol": "soft rain",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "rainy window glow",
+                  "healingSubject": "a peaceful silhouette near a window",
+                  "healingTextPlacement": "right side with clean vertical quote styling",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I’m learning to live with the missing.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Memory Photo Glow",
+                  "healingEmotion": "Remembering Their Smile",
+                  "healingMood": "Peaceful and Warm",
+                  "healingScene": "Empty Chair With Light",
+                  "healingSymbol": "memory photo frame",
+                  "healingArtStyle": "Warm Storybook Realism",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "hands holding a glowing memory photo",
+                  "healingTextPlacement": "top center with soft glowing text",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Your memory still lights my way.",
+                  "healingDetail": "their smile"
+            },
+            {
+                  "name": "Peace In The Pain Garden",
+                  "healingEmotion": "Peace In The Pain",
+                  "healingMood": "Spiritually Uplifting",
+                  "healingScene": "Flower Field of Memories",
+                  "healingSymbol": "white flowers",
+                  "healingArtStyle": "Peaceful Spiritual Art",
+                  "healingColorPalette": "Soft Lavender and Silver",
+                  "healingLighting": "gentle heavenly light",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Love never leaves.",
+                  "healingDetail": "favorite flower"
+            },
+            {
+                  "name": "Numb But Breathing",
+                  "healingEmotion": "Feeling Numb",
+                  "healingMood": "Soft and Comforting",
+                  "healingScene": "Cozy Prayer Corner",
+                  "healingSymbol": "open journal",
+                  "healingArtStyle": "Dreamy Watercolor Glow",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "moonlight with soft highlights",
+                  "healingSubject": "a woman holding a journal near soft light",
+                  "healingTextPlacement": "no typography, image only",
+                  "healingTextOption": "No text on image",
+                  "healingMessage": "Some days surviving is enough.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Golden Chair Of Remembrance",
+                  "healingEmotion": "Missing Them Today",
+                  "healingMood": "Peaceful and Warm",
+                  "healingScene": "Empty Chair With Light",
+                  "healingSymbol": "warm golden light",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Sunset Orange and Gold",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "an empty chair surrounded by warm light",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "You are gone, but never forgotten.",
+                  "healingDetail": "favorite color"
+            },
+            {
+                  "name": "Starry Night Comfort",
+                  "healingEmotion": "Needing Comfort",
+                  "healingMood": "Calm After The Storm",
+                  "healingScene": "Starry Night Reflection",
+                  "healingSymbol": "floating sparkles",
+                  "healingArtStyle": "Peaceful Spiritual Art",
+                  "healingColorPalette": "Royal Blue, Gold, Black, and Soft White",
+                  "healingLighting": "moonlight with soft highlights",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "center overlay with gentle transparent glow",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Grief is love with nowhere to go.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Hope After Loss Lake",
+                  "healingEmotion": "Hope After Loss",
+                  "healingMood": "Light Breaking Through",
+                  "healingScene": "Peaceful Lakeside",
+                  "healingSymbol": "heart-shaped light",
+                  "healingArtStyle": "Luxury Digital Illustration",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "sunrise light breaking through",
+                  "healingSubject": "a peaceful silhouette near a window",
+                  "healingTextPlacement": "top center with soft glowing text",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Love never leaves.",
+                  "healingDetail": "a shared memory"
+            },
+            {
+                  "name": "Candle For The Heart",
+                  "healingEmotion": "Missing Them Today",
+                  "healingMood": "Gentle and Reflective",
+                  "healingScene": "Candlelit Bedroom",
+                  "healingSymbol": "glowing candles",
+                  "healingArtStyle": "Emotional Editorial Poster",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "candlelit warmth",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I still carry your love.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Soft Butterfly Reminder",
+                  "healingEmotion": "Love That Still Remains",
+                  "healingMood": "Spiritually Uplifting",
+                  "healingScene": "Dreamy Cloud Glow",
+                  "healingSymbol": "soft butterflies",
+                  "healingArtStyle": "Dreamy Watercolor Glow",
+                  "healingColorPalette": "Soft Lavender and Silver",
+                  "healingLighting": "gentle heavenly light",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "right side with clean vertical quote styling",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Your memory still lights my way.",
+                  "healingDetail": "favorite flower"
+            },
+            {
+                  "name": "Journal Through Tears",
+                  "healingEmotion": "Quiet Tears",
+                  "healingMood": "Soft and Comforting",
+                  "healingScene": "Cozy Prayer Corner",
+                  "healingSymbol": "open journal",
+                  "healingArtStyle": "Warm Storybook Realism",
+                  "healingColorPalette": "Blush Pink and Champagne",
+                  "healingLighting": "candlelit warmth",
+                  "healingSubject": "a woman holding a journal near soft light",
+                  "healingTextPlacement": "left side with warm handwritten-style typography",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I’m learning to live with the missing.",
+                  "healingDetail": "their laugh"
+            },
+            {
+                  "name": "Golden Sunset Missing You",
+                  "healingEmotion": "Missing Them Today",
+                  "healingMood": "Emotional but Hopeful",
+                  "healingScene": "Memorial Garden",
+                  "healingSymbol": "warm golden light",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Sunset Orange and Gold",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "You are gone, but never forgotten.",
+                  "healingDetail": "their smile"
+            },
+            {
+                  "name": "Window Of Quiet Strength",
+                  "healingEmotion": "Trying To Keep Going",
+                  "healingMood": "Motivational Strength",
+                  "healingScene": "Sunrise Window",
+                  "healingSymbol": "gentle wind",
+                  "healingArtStyle": "Emotional Editorial Poster",
+                  "healingColorPalette": "Royal Blue, Gold, Black, and Soft White",
+                  "healingLighting": "sunrise light breaking through",
+                  "healingSubject": "a peaceful silhouette near a window",
+                  "healingTextPlacement": "center overlay with gentle transparent glow",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I can miss you and still keep going.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "White Flower Peace",
+                  "healingEmotion": "Peace In The Pain",
+                  "healingMood": "Peaceful and Warm",
+                  "healingScene": "Flower Field of Memories",
+                  "healingSymbol": "white flowers",
+                  "healingArtStyle": "Warm Storybook Realism",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "no typography, image only",
+                  "healingTextOption": "No text on image",
+                  "healingMessage": "Love never leaves.",
+                  "healingDetail": "favorite flower"
+            },
+            {
+                  "name": "Dove Light Comfort",
+                  "healingEmotion": "Needing Comfort",
+                  "healingMood": "Spiritually Uplifting",
+                  "healingScene": "Dreamy Cloud Glow",
+                  "healingSymbol": "doves",
+                  "healingArtStyle": "Peaceful Spiritual Art",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "gentle heavenly light",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "top center with soft glowing text",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I still carry your love.",
+                  "healingDetail": "a special nickname"
+            },
+            {
+                  "name": "Moonlit Missing",
+                  "healingEmotion": "Missing Them Today",
+                  "healingMood": "Gentle and Reflective",
+                  "healingScene": "Starry Night Reflection",
+                  "healingSymbol": "floating sparkles",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Soft Lavender and Silver",
+                  "healingLighting": "moonlight with soft highlights",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "right side with clean vertical quote styling",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Grief is love with nowhere to go.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Warm Prayer Corner",
+                  "healingEmotion": "Needing Comfort",
+                  "healingMood": "Soft and Comforting",
+                  "healingScene": "Cozy Prayer Corner",
+                  "healingSymbol": "glowing candles",
+                  "healingArtStyle": "Luxury Digital Illustration",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "candlelit warmth",
+                  "healingSubject": "a woman holding a journal near soft light",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Some days surviving is enough.",
+                  "healingDetail": "their laugh"
+            },
+            {
+                  "name": "Heart Light After Rain",
+                  "healingEmotion": "Hope After Loss",
+                  "healingMood": "Calm After The Storm",
+                  "healingScene": "Rainy Healing Walk",
+                  "healingSymbol": "heart-shaped light",
+                  "healingArtStyle": "Dreamy Watercolor Glow",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "rainy window glow",
+                  "healingSubject": "a peaceful silhouette near a window",
+                  "healingTextPlacement": "center overlay with gentle transparent glow",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Your memory still lights my way.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Soft Cream Reflection",
+                  "healingEmotion": "Remembering Their Smile",
+                  "healingMood": "Peaceful and Warm",
+                  "healingScene": "Candlelit Bedroom",
+                  "healingSymbol": "memory photo frame",
+                  "healingArtStyle": "Warm Storybook Realism",
+                  "healingColorPalette": "Warm Gold and Cream",
+                  "healingLighting": "candlelit warmth",
+                  "healingSubject": "hands holding a glowing memory photo",
+                  "healingTextPlacement": "left side with warm handwritten-style typography",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I still carry your love.",
+                  "healingDetail": "their smile"
+            },
+            {
+                  "name": "Cloud Glow Reunion Feeling",
+                  "healingEmotion": "Love That Still Remains",
+                  "healingMood": "Spiritually Uplifting",
+                  "healingScene": "Dreamy Cloud Glow",
+                  "healingSymbol": "sunrise rays",
+                  "healingArtStyle": "Peaceful Spiritual Art",
+                  "healingColorPalette": "Blush Pink and Champagne",
+                  "healingLighting": "gentle heavenly light",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "top center with soft glowing text",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "Love never leaves.",
+                  "healingDetail": "a shared memory"
+            },
+            {
+                  "name": "Blue Gold Grace",
+                  "healingEmotion": "Peace In The Pain",
+                  "healingMood": "Motivational Strength",
+                  "healingScene": "Sunrise Window",
+                  "healingSymbol": "warm golden light",
+                  "healingArtStyle": "Luxury Digital Illustration",
+                  "healingColorPalette": "Royal Blue, Gold, Black, and Soft White",
+                  "healingLighting": "sunrise light breaking through",
+                  "healingSubject": "a grieving woman finding peace",
+                  "healingTextPlacement": "bottom center with elegant readable lettering",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I can miss you and still keep going.",
+                  "healingDetail": "None"
+            },
+            {
+                  "name": "Gentle Wind Memory",
+                  "healingEmotion": "Remembering Their Smile",
+                  "healingMood": "Gentle and Reflective",
+                  "healingScene": "Peaceful Lakeside",
+                  "healingSymbol": "gentle wind",
+                  "healingArtStyle": "Soft Cinematic Realism",
+                  "healingColorPalette": "Sky Blue and White",
+                  "healingLighting": "soft golden glow",
+                  "healingSubject": "a peaceful silhouette near a window",
+                  "healingTextPlacement": "no typography, image only",
+                  "healingTextOption": "No text on image",
+                  "healingMessage": "Your memory still lights my way.",
+                  "healingDetail": "their smile"
+            },
+            {
+                  "name": "Lavender Peace Lift",
+                  "healingEmotion": "Feeling Numb",
+                  "healingMood": "Light Breaking Through",
+                  "healingScene": "Flower Field of Memories",
+                  "healingSymbol": "white flowers",
+                  "healingArtStyle": "Dreamy Watercolor Glow",
+                  "healingColorPalette": "Soft Lavender and Silver",
+                  "healingLighting": "sunrise light breaking through",
+                  "healingSubject": "a person sitting quietly with memories",
+                  "healingTextPlacement": "center overlay with gentle transparent glow",
+                  "healingTextOption": "Include meaningful typography",
+                  "healingMessage": "I’m learning to live with the missing.",
+                  "healingDetail": "None"
+            }
+      ],
+      "affirmation": [
+            {
+                  "name": "Allowed To Grieve",
+                  "affirmTheme": "Learning To Breathe Again",
+                  "affirmPosterStyle": "Soft Luxury Poster",
+                  "affirmText": "I am allowed to grieve and still grow."
+            },
+            {
+                  "name": "Love Still Lives",
+                  "affirmTheme": "Still Loved",
+                  "affirmPosterStyle": "Golden Light Typography Poster",
+                  "affirmText": "My love for them still lives in me."
+            },
+            {
+                  "name": "Grace Today",
+                  "affirmTheme": "Soft Strength",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "I can carry grief with grace today."
+            },
+            {
+                  "name": "Healing Pace",
+                  "affirmTheme": "Healing Day By Day",
+                  "affirmPosterStyle": "Minimal Emotional Quote Art",
+                  "affirmText": "I am healing at my own pace."
+            },
+            {
+                  "name": "Breathe Again",
+                  "affirmTheme": "Peace After Pain",
+                  "affirmPosterStyle": "Journal Page Inspired Poster",
+                  "affirmText": "My heart is learning how to breathe again."
+            },
+            {
+                  "name": "Soft Morning Hope",
+                  "affirmTheme": "Learning To Breathe Again",
+                  "affirmPosterStyle": "Golden Light Typography Poster",
+                  "affirmText": "I am allowed to grieve and still grow."
+            },
+            {
+                  "name": "Still Held By Love",
+                  "affirmTheme": "Still Loved",
+                  "affirmPosterStyle": "Soft Luxury Poster",
+                  "affirmText": "My love for them still lives in me."
+            },
+            {
+                  "name": "Quiet Power",
+                  "affirmTheme": "Soft Strength",
+                  "affirmPosterStyle": "Minimal Emotional Quote Art",
+                  "affirmText": "I can carry grief with grace today."
+            },
+            {
+                  "name": "One Day Softer",
+                  "affirmTheme": "Healing Day By Day",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "I am healing at my own pace."
+            },
+            {
+                  "name": "After The Ache",
+                  "affirmTheme": "Peace After Pain",
+                  "affirmPosterStyle": "Soft Luxury Poster",
+                  "affirmText": "My heart is learning how to breathe again."
+            },
+            {
+                  "name": "Golden Reminder",
+                  "affirmTheme": "Still Loved",
+                  "affirmPosterStyle": "Golden Light Typography Poster",
+                  "affirmText": "My love for them still lives in me."
+            },
+            {
+                  "name": "Journal Grace",
+                  "affirmTheme": "Learning To Breathe Again",
+                  "affirmPosterStyle": "Journal Page Inspired Poster",
+                  "affirmText": "I am allowed to grieve and still grow."
+            },
+            {
+                  "name": "Peaceful Strength",
+                  "affirmTheme": "Soft Strength",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "I can carry grief with grace today."
+            },
+            {
+                  "name": "Healing Light",
+                  "affirmTheme": "Healing Day By Day",
+                  "affirmPosterStyle": "Golden Light Typography Poster",
+                  "affirmText": "I am healing at my own pace."
+            },
+            {
+                  "name": "Soft Breath",
+                  "affirmTheme": "Peace After Pain",
+                  "affirmPosterStyle": "Minimal Emotional Quote Art",
+                  "affirmText": "My heart is learning how to breathe again."
+            },
+            {
+                  "name": "Grow With Grief",
+                  "affirmTheme": "Learning To Breathe Again",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "I am allowed to grieve and still grow."
+            },
+            {
+                  "name": "Love Remains Poster",
+                  "affirmTheme": "Still Loved",
+                  "affirmPosterStyle": "Journal Page Inspired Poster",
+                  "affirmText": "My love for them still lives in me."
+            },
+            {
+                  "name": "Grace Over Guilt",
+                  "affirmTheme": "Soft Strength",
+                  "affirmPosterStyle": "Soft Luxury Poster",
+                  "affirmText": "I can carry grief with grace today."
+            },
+            {
+                  "name": "Tiny Steps",
+                  "affirmTheme": "Healing Day By Day",
+                  "affirmPosterStyle": "Minimal Emotional Quote Art",
+                  "affirmText": "I am healing at my own pace."
+            },
+            {
+                  "name": "Light After Pain",
+                  "affirmTheme": "Peace After Pain",
+                  "affirmPosterStyle": "Golden Light Typography Poster",
+                  "affirmText": "My heart is learning how to breathe again."
+            },
+            {
+                  "name": "Permission To Feel",
+                  "affirmTheme": "Learning To Breathe Again",
+                  "affirmPosterStyle": "Minimal Emotional Quote Art",
+                  "affirmText": "I am allowed to grieve and still grow."
+            },
+            {
+                  "name": "Forever Connected",
+                  "affirmTheme": "Still Loved",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "My love for them still lives in me."
+            },
+            {
+                  "name": "Carry It Softly",
+                  "affirmTheme": "Soft Strength",
+                  "affirmPosterStyle": "Journal Page Inspired Poster",
+                  "affirmText": "I can carry grief with grace today."
+            },
+            {
+                  "name": "Healing Not Rushing",
+                  "affirmTheme": "Healing Day By Day",
+                  "affirmPosterStyle": "Soft Luxury Poster",
+                  "affirmText": "I am healing at my own pace."
+            },
+            {
+                  "name": "Breath By Breath",
+                  "affirmTheme": "Peace After Pain",
+                  "affirmPosterStyle": "Peaceful Wall Art Style",
+                  "affirmText": "My heart is learning how to breathe again."
+            }
+      ],
+      "memory": [
+            {
+                  "name": "Sunset Garden Sign",
+                  "memoryType": "A quiet sign that they are still near in spirit",
+                  "memorySetting": "Golden sunset garden",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "a soft sign of continuing love"
+            },
+            {
+                  "name": "Kitchen Table Love",
+                  "memoryType": "A peaceful reminder of their love",
+                  "memorySetting": "Soft glowing kitchen table",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            },
+            {
+                  "name": "Bedroom Photo Peace",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Peaceful bedroom with old photographs",
+                  "memorySymbol": "a single candle beside flowers",
+                  "memoryFocalPoint": "remembrance wrapped in love"
+            },
+            {
+                  "name": "Flower Field Tribute",
+                  "memoryType": "A symbolic tribute to their life",
+                  "memorySetting": "Dreamlike field of flowers",
+                  "memorySymbol": "a gentle butterfly near the window",
+                  "memoryFocalPoint": "hope rising through grief"
+            },
+            {
+                  "name": "Evening Porch Memory",
+                  "memoryType": "A beautiful memory returning softly",
+                  "memorySetting": "Quiet porch with warm evening light",
+                  "memorySymbol": "a glowing heart of light",
+                  "memoryFocalPoint": "quiet strength after loss"
+            },
+            {
+                  "name": "Golden Frame Glow",
+                  "memoryType": "A peaceful reminder of their love",
+                  "memorySetting": "Golden sunset garden",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "remembrance wrapped in love"
+            },
+            {
+                  "name": "Letter On The Table",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Soft glowing kitchen table",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            },
+            {
+                  "name": "Candle Near Photos",
+                  "memoryType": "A beautiful memory returning softly",
+                  "memorySetting": "Peaceful bedroom with old photographs",
+                  "memorySymbol": "a single candle beside flowers",
+                  "memoryFocalPoint": "a soft sign of continuing love"
+            },
+            {
+                  "name": "Butterfly Field Peace",
+                  "memoryType": "A quiet sign that they are still near in spirit",
+                  "memorySetting": "Dreamlike field of flowers",
+                  "memorySymbol": "a gentle butterfly near the window",
+                  "memoryFocalPoint": "hope rising through grief"
+            },
+            {
+                  "name": "Porch Heart Light",
+                  "memoryType": "A symbolic tribute to their life",
+                  "memorySetting": "Quiet porch with warm evening light",
+                  "memorySymbol": "a glowing heart of light",
+                  "memoryFocalPoint": "quiet strength after loss"
+            },
+            {
+                  "name": "Garden Remembrance",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Golden sunset garden",
+                  "memorySymbol": "a single candle beside flowers",
+                  "memoryFocalPoint": "remembrance wrapped in love"
+            },
+            {
+                  "name": "Kitchen Heart Note",
+                  "memoryType": "A quiet sign that they are still near in spirit",
+                  "memorySetting": "Soft glowing kitchen table",
+                  "memorySymbol": "a glowing heart of light",
+                  "memoryFocalPoint": "a soft sign of continuing love"
+            },
+            {
+                  "name": "Old Photos Strength",
+                  "memoryType": "A peaceful reminder of their love",
+                  "memorySetting": "Peaceful bedroom with old photographs",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "quiet strength after loss"
+            },
+            {
+                  "name": "Dream Flower Letter",
+                  "memoryType": "A beautiful memory returning softly",
+                  "memorySetting": "Dreamlike field of flowers",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            },
+            {
+                  "name": "Warm Porch Candle",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Quiet porch with warm evening light",
+                  "memorySymbol": "a single candle beside flowers",
+                  "memoryFocalPoint": "remembrance wrapped in love"
+            },
+            {
+                  "name": "Sunset Butterfly Sign",
+                  "memoryType": "A quiet sign that they are still near in spirit",
+                  "memorySetting": "Golden sunset garden",
+                  "memorySymbol": "a gentle butterfly near the window",
+                  "memoryFocalPoint": "a soft sign of continuing love"
+            },
+            {
+                  "name": "Kitchen Photo Glow",
+                  "memoryType": "A symbolic tribute to their life",
+                  "memorySetting": "Soft glowing kitchen table",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            },
+            {
+                  "name": "Bedroom Letter Comfort",
+                  "memoryType": "A beautiful memory returning softly",
+                  "memorySetting": "Peaceful bedroom with old photographs",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "quiet strength after loss"
+            },
+            {
+                  "name": "Field Heart Rising",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Dreamlike field of flowers",
+                  "memorySymbol": "a glowing heart of light",
+                  "memoryFocalPoint": "hope rising through grief"
+            },
+            {
+                  "name": "Porch Photo Tribute",
+                  "memoryType": "A symbolic tribute to their life",
+                  "memorySetting": "Quiet porch with warm evening light",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "remembrance wrapped in love"
+            },
+            {
+                  "name": "Golden Letter Garden",
+                  "memoryType": "A beautiful memory returning softly",
+                  "memorySetting": "Golden sunset garden",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            },
+            {
+                  "name": "Kitchen Candle Peace",
+                  "memoryType": "A peaceful reminder of their love",
+                  "memorySetting": "Soft glowing kitchen table",
+                  "memorySymbol": "a single candle beside flowers",
+                  "memoryFocalPoint": "quiet strength after loss"
+            },
+            {
+                  "name": "Bedroom Butterfly Sign",
+                  "memoryType": "A quiet sign that they are still near in spirit",
+                  "memorySetting": "Peaceful bedroom with old photographs",
+                  "memorySymbol": "a gentle butterfly near the window",
+                  "memoryFocalPoint": "a soft sign of continuing love"
+            },
+            {
+                  "name": "Flower Photo Tribute",
+                  "memoryType": "A symbolic tribute to their life",
+                  "memorySetting": "Dreamlike field of flowers",
+                  "memorySymbol": "a framed photo glowing softly",
+                  "memoryFocalPoint": "hope rising through grief"
+            },
+            {
+                  "name": "Porch Letter Glow",
+                  "memoryType": "A healing moment of remembrance",
+                  "memorySetting": "Quiet porch with warm evening light",
+                  "memorySymbol": "a handwritten letter filled with love",
+                  "memoryFocalPoint": "peaceful connection through memory"
+            }
+      ],
+      "caption": [
+            {
+                  "name": "Anniversary Comfort",
+                  "captionMood": "Hopeful but honest",
+                  "captionAudience": "Someone facing an anniversary date",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Silent Griever",
+                  "captionMood": "Soft and emotional",
+                  "captionAudience": "Someone grieving silently",
+                  "captionCTA": "Comment a heart for someone you miss."
+            },
+            {
+                  "name": "Keep Going Reminder",
+                  "captionMood": "Motivational",
+                  "captionAudience": "Someone trying to keep going",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Need Comfort Today",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone needing comfort today",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Faith Softly Holding",
+                  "captionMood": "Faith-filled",
+                  "captionAudience": "Someone missing a loved one",
+                  "captionCTA": "Comment “I remember” if this touched your heart."
+            },
+            {
+                  "name": "Missing Them Post",
+                  "captionMood": "Soft and emotional",
+                  "captionAudience": "Someone missing a loved one",
+                  "captionCTA": "Comment a heart for someone you miss."
+            },
+            {
+                  "name": "Heavy Date Support",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone facing an anniversary date",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Quiet Mourning",
+                  "captionMood": "Hopeful but honest",
+                  "captionAudience": "Someone grieving silently",
+                  "captionCTA": "Follow for more healing reminders."
+            },
+            {
+                  "name": "One Step Forward",
+                  "captionMood": "Motivational",
+                  "captionAudience": "Someone trying to keep going",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Soft Prayer Caption",
+                  "captionMood": "Faith-filled",
+                  "captionAudience": "Someone needing comfort today",
+                  "captionCTA": "Comment “I remember” if this touched your heart."
+            },
+            {
+                  "name": "Love Still Matters",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone missing a loved one",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Date On The Calendar",
+                  "captionMood": "Hopeful but honest",
+                  "captionAudience": "Someone facing an anniversary date",
+                  "captionCTA": "Comment a heart for someone you miss."
+            },
+            {
+                  "name": "Private Tears",
+                  "captionMood": "Soft and emotional",
+                  "captionAudience": "Someone grieving silently",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Strength Today",
+                  "captionMood": "Motivational",
+                  "captionAudience": "Someone trying to keep going",
+                  "captionCTA": "Follow for more healing reminders."
+            },
+            {
+                  "name": "Held By Grace",
+                  "captionMood": "Faith-filled",
+                  "captionAudience": "Someone needing comfort today",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Memory Share",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone missing a loved one",
+                  "captionCTA": "Comment “I remember” if this touched your heart."
+            },
+            {
+                  "name": "Anniversary Breath",
+                  "captionMood": "Soft and emotional",
+                  "captionAudience": "Someone facing an anniversary date",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Unseen Grief",
+                  "captionMood": "Hopeful but honest",
+                  "captionAudience": "Someone grieving silently",
+                  "captionCTA": "Comment a heart for someone you miss."
+            },
+            {
+                  "name": "Still Moving",
+                  "captionMood": "Motivational",
+                  "captionAudience": "Someone trying to keep going",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Comfort In The Moment",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone needing comfort today",
+                  "captionCTA": "Follow for more healing reminders."
+            },
+            {
+                  "name": "Prayer For The Missing",
+                  "captionMood": "Faith-filled",
+                  "captionAudience": "Someone missing a loved one",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            },
+            {
+                  "name": "Calendar Ache",
+                  "captionMood": "Hopeful but honest",
+                  "captionAudience": "Someone facing an anniversary date",
+                  "captionCTA": "Share this with someone who needs comfort."
+            },
+            {
+                  "name": "Hidden Heartache",
+                  "captionMood": "Soft and emotional",
+                  "captionAudience": "Someone grieving silently",
+                  "captionCTA": "Comment “I remember” if this touched your heart."
+            },
+            {
+                  "name": "Soft Survival",
+                  "captionMood": "Motivational",
+                  "captionAudience": "Someone trying to keep going",
+                  "captionCTA": "Comment a heart for someone you miss."
+            },
+            {
+                  "name": "Today Feels Heavy",
+                  "captionMood": "Comforting",
+                  "captionAudience": "Someone needing comfort today",
+                  "captionCTA": "Save this for the day grief feels heavy."
+            }
+      ],
+      "letter": [
+            {
+                  "name": "Dear Sister Today",
+                  "letterEmotion": "I miss you deeply today",
+                  "letterRelationship": "My Sister",
+                  "letterTone": "soft and emotional",
+                  "letterMemoryFocus": "their laugh",
+                  "letterHealingEnding": "I will carry your love with me forever.",
+                  "letterPersonalDetail": "her laugh"
+            },
+            {
+                  "name": "Wish We Could Talk",
+                  "letterEmotion": "I wish I could talk to you again",
+                  "letterRelationship": "Someone I Loved Deeply",
+                  "letterTone": "honest and vulnerable",
+                  "letterMemoryFocus": "our favorite conversations",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "our phone calls"
+            },
+            {
+                  "name": "Trying To Stay Strong",
+                  "letterEmotion": "I’m trying to stay strong",
+                  "letterRelationship": "My Mother",
+                  "letterTone": "comforting and healing",
+                  "letterMemoryFocus": "the way they comforted me",
+                  "letterHealingEnding": "Your memory still gives me strength.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "Everyday Memory",
+                  "letterEmotion": "I still think about you every day",
+                  "letterRelationship": "My Father",
+                  "letterTone": "warm and grateful",
+                  "letterMemoryFocus": "their strength",
+                  "letterHealingEnding": "I am learning to keep going with your love in my heart.",
+                  "letterPersonalDetail": "None"
+            },
+            {
+                  "name": "Healing Slowly",
+                  "letterEmotion": "I’m healing slowly",
+                  "letterRelationship": "My Grandmother",
+                  "letterTone": "hopeful but tearful",
+                  "letterMemoryFocus": "their kindness",
+                  "letterHealingEnding": "Until we meet again, I will keep honoring you with love.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "See Me Now",
+                  "letterEmotion": "I wish you could see me now",
+                  "letterRelationship": "My Brother",
+                  "letterTone": "deeply personal",
+                  "letterMemoryFocus": "the memories we shared together",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "inside jokes"
+            },
+            {
+                  "name": "Love Around Me",
+                  "letterEmotion": "I still feel your love around me",
+                  "letterRelationship": "My Best Friend",
+                  "letterTone": "comforting and healing",
+                  "letterMemoryFocus": "their presence in my life",
+                  "letterHealingEnding": "I will carry your love with me forever.",
+                  "letterPersonalDetail": "their favorite song"
+            },
+            {
+                  "name": "Living With Missing",
+                  "letterEmotion": "I’m learning to live with the missing",
+                  "letterRelationship": "My Grandfather",
+                  "letterTone": "honest and vulnerable",
+                  "letterMemoryFocus": "their smile",
+                  "letterHealingEnding": "Your memory still gives me strength.",
+                  "letterPersonalDetail": "None"
+            },
+            {
+                  "name": "Soft Sister Letter",
+                  "letterEmotion": "I miss you deeply today",
+                  "letterRelationship": "My Sister",
+                  "letterTone": "hopeful but tearful",
+                  "letterMemoryFocus": "their smile",
+                  "letterHealingEnding": "I am learning to keep going with your love in my heart.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "Mother Comfort Letter",
+                  "letterEmotion": "I wish I could talk to you again",
+                  "letterRelationship": "My Mother",
+                  "letterTone": "soft and emotional",
+                  "letterMemoryFocus": "the way they comforted me",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "our phone calls"
+            },
+            {
+                  "name": "Father Strength Letter",
+                  "letterEmotion": "I’m trying to stay strong",
+                  "letterRelationship": "My Father",
+                  "letterTone": "warm and grateful",
+                  "letterMemoryFocus": "their strength",
+                  "letterHealingEnding": "Your memory still gives me strength.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "Brother Memory Letter",
+                  "letterEmotion": "I still think about you every day",
+                  "letterRelationship": "My Brother",
+                  "letterTone": "deeply personal",
+                  "letterMemoryFocus": "the memories we shared together",
+                  "letterHealingEnding": "Until we meet again, I will keep honoring you with love.",
+                  "letterPersonalDetail": "inside jokes"
+            },
+            {
+                  "name": "Grandma Love Letter",
+                  "letterEmotion": "I still feel your love around me",
+                  "letterRelationship": "My Grandmother",
+                  "letterTone": "comforting and healing",
+                  "letterMemoryFocus": "their kindness",
+                  "letterHealingEnding": "I will carry your love with me forever.",
+                  "letterPersonalDetail": "sunflowers"
+            },
+            {
+                  "name": "Grandpa Wisdom Letter",
+                  "letterEmotion": "I’m healing slowly",
+                  "letterRelationship": "My Grandfather",
+                  "letterTone": "honest and vulnerable",
+                  "letterMemoryFocus": "their presence in my life",
+                  "letterHealingEnding": "I am learning to keep going with your love in my heart.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "Best Friend Missing You",
+                  "letterEmotion": "I miss you deeply today",
+                  "letterRelationship": "My Best Friend",
+                  "letterTone": "soft and emotional",
+                  "letterMemoryFocus": "our favorite conversations",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "our phone calls"
+            },
+            {
+                  "name": "Loved Deeply Letter",
+                  "letterEmotion": "I wish you could see me now",
+                  "letterRelationship": "Someone I Loved Deeply",
+                  "letterTone": "warm and grateful",
+                  "letterMemoryFocus": "their smile",
+                  "letterHealingEnding": "Your memory still gives me strength.",
+                  "letterPersonalDetail": "None"
+            },
+            {
+                  "name": "Still Reaching For You",
+                  "letterEmotion": "I wish I could talk to you again",
+                  "letterRelationship": "Someone I Loved Deeply",
+                  "letterTone": "hopeful but tearful",
+                  "letterMemoryFocus": "their presence in my life",
+                  "letterHealingEnding": "Until we meet again, I will keep honoring you with love.",
+                  "letterPersonalDetail": "their favorite song"
+            },
+            {
+                  "name": "Laugh I Miss",
+                  "letterEmotion": "I still think about you every day",
+                  "letterRelationship": "My Sister",
+                  "letterTone": "deeply personal",
+                  "letterMemoryFocus": "their laugh",
+                  "letterHealingEnding": "I will carry your love with me forever.",
+                  "letterPersonalDetail": "her laugh"
+            },
+            {
+                  "name": "Phone Call Letter",
+                  "letterEmotion": "I’m learning to live with the missing",
+                  "letterRelationship": "My Mother",
+                  "letterTone": "soft and emotional",
+                  "letterMemoryFocus": "our favorite conversations",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "our phone calls"
+            },
+            {
+                  "name": "Strong But Hurting",
+                  "letterEmotion": "I’m trying to stay strong",
+                  "letterRelationship": "Someone I Loved Deeply",
+                  "letterTone": "honest and vulnerable",
+                  "letterMemoryFocus": "their strength",
+                  "letterHealingEnding": "I am learning to keep going with your love in my heart.",
+                  "letterPersonalDetail": "None"
+            },
+            {
+                  "name": "Gentle Healing Letter",
+                  "letterEmotion": "I’m healing slowly",
+                  "letterRelationship": "My Best Friend",
+                  "letterTone": "comforting and healing",
+                  "letterMemoryFocus": "their kindness",
+                  "letterHealingEnding": "Your memory still gives me strength.",
+                  "letterPersonalDetail": "inside jokes"
+            },
+            {
+                  "name": "Proud Of Me Letter",
+                  "letterEmotion": "I wish you could see me now",
+                  "letterRelationship": "My Father",
+                  "letterTone": "warm and grateful",
+                  "letterMemoryFocus": "the memories we shared together",
+                  "letterHealingEnding": "Until we meet again, I will keep honoring you with love.",
+                  "letterPersonalDetail": "family memories"
+            },
+            {
+                  "name": "Near In Spirit",
+                  "letterEmotion": "I still feel your love around me",
+                  "letterRelationship": "My Grandmother",
+                  "letterTone": "hopeful but tearful",
+                  "letterMemoryFocus": "their presence in my life",
+                  "letterHealingEnding": "I will carry your love with me forever.",
+                  "letterPersonalDetail": "sunflowers"
+            },
+            {
+                  "name": "Missing In Silence",
+                  "letterEmotion": "I miss you deeply today",
+                  "letterRelationship": "Someone I Loved Deeply",
+                  "letterTone": "honest and vulnerable",
+                  "letterMemoryFocus": "their smile",
+                  "letterHealingEnding": "I hope you know how much I still love you.",
+                  "letterPersonalDetail": "None"
+            },
+            {
+                  "name": "Keep Honoring You",
+                  "letterEmotion": "I’m learning to live with the missing",
+                  "letterRelationship": "My Sister",
+                  "letterTone": "comforting and healing",
+                  "letterMemoryFocus": "the memories we shared together",
+                  "letterHealingEnding": "Until we meet again, I will keep honoring you with love.",
+                  "letterPersonalDetail": "her laugh"
+            }
+      ]
+};
+
+
+    const idsByGenerator = {
+      healing: [
+        "healingEmotion", "healingMood", "healingScene", "healingSymbol", "healingArtStyle", "healingColorPalette",
+        "healingLighting", "healingSubject", "healingTextPlacement", "healingTextOption", "healingMessage", "healingDetail"
+      ],
+      affirmation: ["affirmTheme", "affirmPosterStyle", "affirmText"],
+      memory: ["memoryType", "memorySetting", "memorySymbol", "memoryFocalPoint"],
+      caption: ["captionMood", "captionAudience", "captionCTA"],
+      letter: ["letterEmotion", "letterRelationship", "letterTone", "letterMemoryFocus", "letterHealingEnding", "letterPersonalDetail"]
+    };
+
+    document.addEventListener("DOMContentLoaded", initApp);
+
+    function initApp() {
+      document.querySelectorAll(".tab-btn").forEach(button => {
+        button.addEventListener("click", () => openTab(button.dataset.tab, button));
+      });
+
+      document.querySelectorAll("[data-action]").forEach(button => {
+        button.addEventListener("click", () => handleAction(button));
+      });
+
+      document.querySelectorAll("[data-lock]").forEach(button => {
+        button.addEventListener("click", () => toggleLock(button.dataset.lock));
+      });
+
+      populatePresetDropdowns();
+      loadSavedPrompts();
+    }
+
+    function handleAction(button) {
+      const action = button.dataset.action;
+      const generator = button.dataset.generator;
+
+      if (action === "generate") generateByType(generator);
+      if (action === "random") randomByType(generator);
+      if (action === "preset") applyPreset(generator);
+      if (action === "copy") copyOutput();
+      if (action === "clear") clearOutput();
+      if (action === "save") saveOutput();
+      if (action === "clearSaved") clearSavedPrompts();
+    }
+
+    function openTab(tabId, button) {
+      document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+
+      document.getElementById(tabId).classList.add("active");
+      button.classList.add("active");
+    }
+
+    function toggleLock(id) {
+      const button = document.querySelector(`[data-lock="${id}"]`);
+      const card = document.querySelector(`[data-card="${id}"]`);
+
+      if (lockedCards.has(id)) {
+        lockedCards.delete(id);
+        button.textContent = "🔓";
+        button.classList.remove("locked");
+        card.classList.remove("locked");
+        showStatus("Unlocked.");
+      } else {
+        lockedCards.add(id);
+        button.textContent = "🔒";
+        button.classList.add("locked");
+        card.classList.add("locked");
+        showStatus("Locked.");
+      }
+    }
+
+
+    function populatePresetDropdowns() {
+      Object.keys(presetData).forEach(type => {
+        const select = document.getElementById(`${type}Preset`);
+        if (!select) return;
+
+        select.innerHTML = "";
+
+        presetData[type].forEach((preset, index) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = preset.name;
+          select.appendChild(option);
+        });
+      });
+    }
+
+    function applyPreset(type) {
+      const select = document.getElementById(`${type}Preset`);
+      if (!select || !presetData[type]) return;
+
+      const preset = presetData[type][Number(select.value)];
+      if (!preset) return;
+
+      Object.keys(preset).forEach(id => {
+        if (id === "name") return;
+        if (lockedCards.has(id)) return;
+
+        const field = document.getElementById(id);
+        const custom = document.getElementById(`${id}Custom`);
+
+        if (custom) custom.value = "";
+
+        if (field && field.tagName === "SELECT") {
+          setSelectValue(field, preset[id]);
+        } else if (field) {
+          field.value = preset[id];
+        }
+      });
+
+      generateByType(type);
+      showStatus("Preset applied.");
+    }
+
+    function setSelectValue(select, value) {
+      const option = Array.from(select.options).find(item => item.value === value || item.textContent === value);
+      if (option) {
+        select.value = option.value;
+      }
+    }
+
+
+    function generateByType(type) {
+      const generators = {
+        healing: generateHealingPrompt,
+        affirmation: generateAffirmationPrompt,
+        memory: generateMemoryPrompt,
+        caption: generateCaptionMessage,
+        letter: generateLetter
+      };
+
+      if (generators[type]) generators[type]();
+    }
+
+    function randomByType(type) {
+      const ids = idsByGenerator[type] || [];
+      ids.forEach(id => {
+        if (!lockedCards.has(id)) randomSelect(id);
+      });
+      generateByType(type);
+    }
+
+    function selectedOrCustom(id) {
+      const custom = document.getElementById(`${id}Custom`);
+      const base = document.getElementById(id);
+      const customValue = custom ? custom.value.trim() : "";
+      return customValue || (base ? base.value.trim() : "");
+    }
+
+    function generateHealingPrompt() {
+      const emotion = selectedOrCustom("healingEmotion");
+      const mood = selectedOrCustom("healingMood");
+      const scene = selectedOrCustom("healingScene");
+      const symbol = selectedOrCustom("healingSymbol");
+      const artStyle = selectedOrCustom("healingArtStyle");
+      const colorPalette = selectedOrCustom("healingColorPalette");
+      const lighting = selectedOrCustom("healingLighting");
+      const subject = selectedOrCustom("healingSubject");
+      const placement = selectedOrCustom("healingTextPlacement");
+      const textOption = selectedOrCustom("healingTextOption");
+      const finalMessage = selectedOrCustom("healingMessage");
+      const detail = selectedOrCustom("healingDetail");
+
+      const typographyLine =
+        textOption.toLowerCase().includes("no text") || placement.toLowerCase().includes("no typography")
+          ? "Do not add any text or typography to the image. Let the emotion, lighting, subject, and symbolic details tell the story visually."
+          : `Add meaningful typography that says: "${finalMessage}" Place the typography ${placement}.`;
+
+      const detailLine = detail && detail !== "None"
+        ? `Include a gentle personal remembrance detail inspired by: ${detail}.`
+        : "";
+
+      const prompt = `Create a beautiful grief-healing AI image centered on ${emotion}.
+
+Main subject: ${subject}.
+
+The mood should feel ${mood}, with a scene set in a ${scene}. Include symbolic details such as ${symbol}.
+
+Visual style: ${artStyle}.
+Color palette: ${colorPalette}.
+Lighting: ${lighting}.
+
+The image should feel emotional but uplifting, soft, cinematic, peaceful, elegant, and full of quiet strength.
+
+${typographyLine}
+
+${detailLine}
+
+Keep the composition warm, readable, comforting, and emotionally supportive. Use soft lighting, gentle textures, emotional storytelling, peaceful atmosphere, and hopeful visual energy.
+
+${emotionalSafetyRule}`;
+
+      setOutput(prompt, "Healing image prompt generated.");
+    }
+
+    function generateAffirmationPrompt() {
+      const theme = selectedOrCustom("affirmTheme");
+      const style = selectedOrCustom("affirmPosterStyle");
+      const text = selectedOrCustom("affirmText");
+
+      const prompt = `Create a grief-healing affirmation poster centered on the theme: ${theme}.
+
+Poster style: ${style}.
+
+Add large, readable, comforting typography that says:
+"${text}"
+
+The design should feel warm, peaceful, elegant, emotional, and uplifting. Use soft glowing light, gentle textures, calming composition, and a hopeful atmosphere.
+
+EMOTIONAL SAFETY RULE:
+Keep this poster comforting and healing. Avoid scary imagery, haunted visuals, extreme darkness, traumatic scenes, coffin closeups, funeral scenes, gore, or hopeless emotional tones.`;
+
+      setOutput(prompt, "Affirmation poster prompt generated.");
+    }
+
+    function generateMemoryPrompt() {
+      const memoryType = selectedOrCustom("memoryType");
+      const setting = selectedOrCustom("memorySetting");
+      const symbol = selectedOrCustom("memorySymbol");
+      const focalPoint = selectedOrCustom("memoryFocalPoint");
+
+      const prompt = `Create a peaceful grief-healing memory scene showing ${memoryType}.
+
+Set the scene in a ${setting}. Include ${symbol} as the emotional focal point.
+
+Core emotional focus: ${focalPoint}.
+
+The image should feel like remembrance wrapped in love, light, and quiet strength. Make it cinematic, soft, warm, elegant, comforting, and emotionally supportive.
+
+Do not make the scene scary, haunted, hopeless, dark, or traumatic. Keep it peaceful, healing, and full of gentle emotional meaning.`;
+
+      setOutput(prompt, "Memory scene prompt generated.");
+    }
+
+    function generateCaptionMessage() {
+      const mood = selectedOrCustom("captionMood");
+      const audience = selectedOrCustom("captionAudience");
+      const cta = selectedOrCustom("captionCTA");
+
+      const caption = `For ${audience}:
+
+Grief doesn’t follow a schedule. Some days you feel strong. Some days one memory can knock the wind out of you.
+
+But missing them means the love was real. And that love still matters.
+
+Today, take one soft breath. You don’t have to be okay all at once. You just have to make it through this moment with a little grace.
+
+Caption mood: ${mood}
+
+${cta}`;
+
+      setOutput(caption, "Caption generated.");
+    }
+
+    function generateLetter() {
+      const emotion = selectedOrCustom("letterEmotion");
+      const relationship = selectedOrCustom("letterRelationship");
+      const tone = selectedOrCustom("letterTone");
+      const memoryFocus = selectedOrCustom("letterMemoryFocus");
+      const ending = selectedOrCustom("letterHealingEnding");
+      const personalDetail = selectedOrCustom("letterPersonalDetail");
+
+      const greetingName = relationship || "my loved one";
+      const finalDetail = personalDetail && personalDetail !== "None" ? personalDetail : memoryFocus;
+
+      const letter = `Dear ${greetingName},
+
+Today, ${emotion.toLowerCase()}. I don’t always know what to do with the ache, but I know the love is still here.
+
+This letter is ${tone}. I’m writing it from the part of me that still reaches for you in quiet moments.
+
+I keep thinking about ${finalDetail}, and it reminds me how much your love shaped my life.
+
+Some days I feel strong. Some days I feel like I’m starting over. But I’m learning that grief is not proof that I’m broken. It is proof that I loved deeply.
+
+I miss you. I honor you. I carry the beautiful parts of you with me.
+
+${ending}`;
+
+      setOutput(letter, "Letter generated.");
+    }
+
+    function setOutput(text, status) {
+      document.getElementById("mainOutput").value = cleanBlankLines(text);
+      showStatus(status);
+    }
+
+    function cleanBlankLines(text) {
+      return text
+        .replace(/\n{3,}/g, "\n\n")
+        .replace(/[ \t]+\n/g, "\n")
+        .trim();
+    }
+
+    async function copyOutput() {
+      const output = document.getElementById("mainOutput").value.trim();
+
+      if (!output) {
+        showStatus("Nothing to copy yet.");
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(output);
+        showStatus("Copied as plain text.");
+      } catch (error) {
+        const textArea = document.getElementById("mainOutput");
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        showStatus("Copied.");
+      }
+    }
+
+    function clearOutput() {
+      document.getElementById("mainOutput").value = "";
+
+      document.querySelectorAll(".custom-field").forEach(field => {
+        if (!lockedCards.has(field.id.replace("Custom", ""))) field.value = "";
+      });
+
+      showStatus("Cleared.");
+    }
+
+    function randomSelect(id) {
+      const select = document.getElementById(id);
+      if (!select || !select.options.length) return;
+
+      const randomIndex = Math.floor(Math.random() * select.options.length);
+      select.selectedIndex = randomIndex;
+    }
+
+    function saveOutput() {
+      const output = document.getElementById("mainOutput").value.trim();
+
+      if (!output) {
+        showStatus("Generate something before saving.");
+        return;
+      }
+
+      const saved = getSavedPrompts();
+      saved.unshift({
+        text: output,
+        createdAt: new Date().toLocaleString()
+      });
+
+      localStorage.setItem("griefToGlowSavedPrompts", JSON.stringify(saved.slice(0, 25)));
+      renderSavedPrompts();
+      showStatus("Saved below.");
+    }
+
+    function getSavedPrompts() {
+      try {
+        return JSON.parse(localStorage.getItem("griefToGlowSavedPrompts")) || [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function loadSavedPrompts() {
+      renderSavedPrompts();
+    }
+
+    function renderSavedPrompts() {
+      const container = document.getElementById("savedPrompts");
+      const saved = getSavedPrompts();
+
+      container.innerHTML = "";
+
+      if (!saved.length) {
+        container.innerHTML = `<p class="mini-note">No saved prompts yet.</p>`;
+        return;
+      }
+
+      saved.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "saved-item";
+        div.textContent = `${item.createdAt}\n\n${item.text}`;
+        container.appendChild(div);
+      });
+    }
+
+    function clearSavedPrompts() {
+      localStorage.removeItem("griefToGlowSavedPrompts");
+      renderSavedPrompts();
+      showStatus("Saved prompts cleared.");
+    }
+
+    function showStatus(message) {
+      const status = document.getElementById("statusMessage");
+      status.textContent = message;
+
+      clearTimeout(window.statusTimer);
+      window.statusTimer = setTimeout(() => {
+        status.textContent = "";
+      }, 2600);
+    }
+  </script>
+</body>
+</html>
